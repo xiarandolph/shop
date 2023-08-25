@@ -1,46 +1,33 @@
+import { fetchProducts, Product } from "./inventory"
 
-interface ItemProps {
-	name: string
-	description: string
-	price: number
-	imageUrl?: string
-}
-
-function Item(props: ItemProps) {
-
+function CatalogItem(props: Product) {
 	const formatter = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: 'USD'
 	})
 
 	return (
-		<div className="inline-flex w-full p-2">
+		<div key={props.id} className="inline-flex w-full p-2">
 			<img 
 				className="pr-2 w-24 h-24"
-				src={props.imageUrl}
+				src={props.imageUrl || ""}
 			/>
 			<div>
 				<h1>{props.name}</h1>
 				<p>{props.description}</p>
 			</div>
 			<div className="ml-auto">
-				<p>{formatter.format(props.price)}</p>
+				<p>{formatter.format(props.price || 0.0)}</p>
 				<button>Add to Cart</button>
 			</div>
 		</div>
 	)
 }
 
-// TODO: get products from API
-const products = [
-	{ name: "Apple", description: "an apple", price: 1.00, imageUrl: 'https://i.imgur.com/yXOvdOSs.jpg'},
-	{ name: "Orange", description: "an orange", price: 1.00}
-]
-
-const catalogItems = products.map(product => Item(product))
+const products = fetchProducts();
+const catalogItems = products.map(product => CatalogItem(product))
 
 // TODO: style...
-
 export default function Catalog() {
 	return (
 		<div className="flex flex-col items-center w-96">
